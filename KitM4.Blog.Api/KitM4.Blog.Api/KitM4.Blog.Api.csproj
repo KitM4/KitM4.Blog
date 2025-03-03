@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+	<PropertyGroup>
+		<TargetFramework>net9.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<AnalysisLevel>latest-recommended</AnalysisLevel>
+		<UserSecretsId>e35623a4-03fa-4f44-9eb9-57b11c5ebd5f</UserSecretsId>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.2" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\KitM4.Blog.Core\KitM4.Blog.Core.csproj" />
+		<ProjectReference Include="..\KitM4.Blog.Domain\KitM4.Blog.Domain.csproj" />
+	</ItemGroup>
+
+</Project>

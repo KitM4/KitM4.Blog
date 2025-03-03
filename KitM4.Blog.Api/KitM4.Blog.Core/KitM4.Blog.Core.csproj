@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net9.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<AnalysisLevel>latest-recommended</AnalysisLevel>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.6.0" />
+		<PackageReference Include="Microsoft.IdentityModel.JsonWebTokens" Version="8.6.0" />
+		<PackageReference Include="FluentValidation" Version="11.11.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\KitM4.Blog.Data\KitM4.Blog.Data.csproj" />
+		<ProjectReference Include="..\KitM4.Blog.Domain\KitM4.Blog.Domain.csproj" />
+	</ItemGroup>
+
+</Project>
