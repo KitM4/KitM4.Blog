@@ -9,8 +9,18 @@ public class DatabaseContext(IConfiguration configuration, DbContextOptions<Data
 {
     public DbSet<User> Users => Set<User>();
 
+    public DbSet<Article> Articles => Set<Article>();
+
+    public DbSet<Comment> Comments => Set<Comment>();
+
+    public DbSet<Tag> Tags => Set<Tag>();
+
+    public DbSet<Rate> Rate => Set<Rate>();
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
+        // TODO: implement configurable database
+
         optionsBuilder.UseSqlite(configuration.GetConnectionString("Sqlite"));
     }
 

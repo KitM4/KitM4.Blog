@@ -1,5 +1,6 @@
 ﻿using KitM4.Blog.Core.Services;
-using KitM4.Blog.Core.Validators;
+using KitM4.Blog.Core.Validators.Auth;
+using KitM4.Blog.Core.Validators.Blog;
 using KitM4.Blog.Core.Services.Interfaces;
 using KitM4.Blog.Data;
 using KitM4.Blog.Data.Repositories;
@@ -28,11 +29,14 @@ public static class ServiceConfigurator
     {
         services.AddDbContext<DatabaseContext>();
         services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IArticleRepository, ArticleRepository>();
         services.AddScoped<IAuthService, AuthService>();
+        services.AddScoped<IBlogService, BlogService>();
 
         services.AddScoped<IValidator<AuthRequests.Login>, LoginRequestValidator>();
         services.AddScoped<IValidator<AuthRequests.Register>, RegisterRequestValidator>();
         services.AddScoped<IValidator<AuthRequests.ChangeRole>, ChangeRoleRequestValidator>();
+        services.AddScoped<IValidator<BlogRequests.PublishArticle>, AddArticleRequestValidator>();
 
         return services;
     }

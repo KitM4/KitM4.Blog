@@ -18,7 +18,6 @@ public static class DatabaseInitializer
         if (!await context.Users.AnyAsync(user => user.Role == UserRole.Admin))
         {
             IOptions<DefaultAdmin> defaultAdminOptions = scope.ServiceProvider.GetRequiredService<IOptions<DefaultAdmin>>();
-
             await SeedDefaultAdmin(context, defaultAdminOptions.Value);
         }
     }
@@ -30,10 +29,15 @@ public static class DatabaseInitializer
             Id = Guid.CreateVersion7(),
             Role = UserRole.Admin,
             Name = defaultAdmin.Name,
-            Title = "Default Admin",
+            Title = defaultAdmin.Title,
+            ProfileImageUrl = defaultAdmin.ProfileImageUrl,
+            Bio = defaultAdmin.Bio,
             PasswordSalt = defaultAdmin.PasswordSalt,
             PasswordHash = defaultAdmin.PasswordHash,
             CreatedAt = DateTime.UtcNow,
+            Articles = [],
+            Comments = [],
+            Rates = [],
         };
 
         await context.Users.AddAsync(admin);

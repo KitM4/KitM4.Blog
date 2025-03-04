@@ -2,7 +2,7 @@
 
 using FluentValidation;
 
-namespace KitM4.Blog.Core.Validators;
+namespace KitM4.Blog.Core.Validators.Auth;
 
 public class ChangeRoleRequestValidator : AbstractValidator<AuthRequests.ChangeRole>
 {
@@ -13,6 +13,6 @@ public class ChangeRoleRequestValidator : AbstractValidator<AuthRequests.ChangeR
             .NotEqual(Guid.Empty).WithMessage("User ID must be a valid GUID");
 
         RuleFor(request => request.NewRole)
-            .IsInEnum().WithMessage("NewRole must be a valid user role");
+            .IsInEnum().WithMessage("New role must be a valid user role");
     }
 }

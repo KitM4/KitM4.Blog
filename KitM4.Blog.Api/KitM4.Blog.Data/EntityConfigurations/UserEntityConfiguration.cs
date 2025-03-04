@@ -12,7 +12,9 @@ internal class UserEntityConfiguration : BaseEntityConfiguration<User>
         base.Configure(builder);
 
         builder
-            .HasKey(user => user.Id);
+            .Property(user => user.Role)
+            .HasConversion<string>()
+            .IsRequired();
 
         builder
             .Property(user => user.Name)
@@ -29,6 +31,10 @@ internal class UserEntityConfiguration : BaseEntityConfiguration<User>
             .IsRequired();
 
         builder
+            .Property(user => user.ProfileImageUrl)
+            .HasMaxLength(EntityDataLength.MaxUrlLength);
+
+        builder
             .Property(user => user.Bio)
             .HasMaxLength(EntityDataLength.MaxBioLength);
 
@@ -43,8 +49,18 @@ internal class UserEntityConfiguration : BaseEntityConfiguration<User>
             .IsRequired();
 
         builder
-            .Property(user => user.Role)
-            .HasConversion<string>()
-            .IsRequired();
+            .HasMany(user => user.Articles)
+            .WithOne(article => article.User)
+            .HasForeignKey(article => article.UserId);
+
+        builder
+            .HasMany(user => user.Comments)
+            .WithOne(comment => comment.User)
+            .HasForeignKey(comment => comment.UserId);
+
+        builder
+            .HasMany(user => user.Rates)
+            .WithOne(rate => rate.User)
+            .HasForeignKey(rate => rate.UserId);
     }
 }

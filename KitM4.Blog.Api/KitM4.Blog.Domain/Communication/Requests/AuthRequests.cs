@@ -4,7 +4,7 @@ namespace KitM4.Blog.Domain.Communication.Requests;
 
 public class AuthRequests
 {
-    public record Register(string Name, string Title, string? Bio, string Password);
+    public record Register(string Name, string Title, string? ProfileImageUrl, string? Bio, string Password);
 
     public record Login(string Name, string Password);
 

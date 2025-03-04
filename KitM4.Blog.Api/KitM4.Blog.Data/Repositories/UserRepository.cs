@@ -13,7 +13,9 @@ public class UserRepository(DatabaseContext database) : IUserRepository
 
     public Task<List<User>> GetAllAsync(CancellationToken ct)
     {
-        throw new NotImplementedException();
+        return _users
+            .AsNoTracking()
+            .ToListAsync(ct);
     }
 
     public Task<User> GetByIdAsync(Guid id, CancellationToken ct)
@@ -42,12 +44,33 @@ public class UserRepository(DatabaseContext database) : IUserRepository
         await database.SaveChangesAsync(ct);
     }
 
+    public async Task<User> GetAuthorAsync(CancellationToken ct)
+    {
+        return await _users
+            .AsNoTracking()
+            .Include(user => user.Articles)
+                .ThenInclude(article => article.Rates)
+            .AsSingleQuery()
+            .FirstOrDefaultAsync(user => user.Role == UserRole.Admin, ct) ??
+                throw new NotFoundException(nameof(User), UserRole.Admin.ToString());
+    }
+
     public async Task<User> GetByNameAsync(string name, CancellationToken ct)
     {
         return await _users
             .AsNoTracking()
             .FirstOrDefaultAsync(user => user.Name == name, ct) ??
                 throw new NotFoundException(nameof(User), name);
+    }
+
+    public async Task<Guid> GetAuthorId(CancellationToken ct)
+    {
+        User admin = await _users
+            .AsNoTracking()
+            .FirstOrDefaultAsync(user => user.Role == UserRole.Admin, ct) ??
+                throw new NotFoundException(nameof(User), UserRole.Admin.ToString());
+
+        return admin.Id;
     }
 
     public async Task<bool> IsExistAsync(string name, CancellationToken ct)

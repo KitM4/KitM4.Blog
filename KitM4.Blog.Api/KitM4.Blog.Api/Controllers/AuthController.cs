@@ -3,7 +3,6 @@ using KitM4.Blog.Core.Services.Interfaces;
 using KitM4.Blog.Domain.Common;
 using KitM4.Blog.Domain.Exceptions;
 using KitM4.Blog.Domain.Communication.Requests;
-using KitM4.Blog.Domain.Communication.Responses;
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
@@ -20,9 +19,7 @@ public class AuthController(IAuthService service) : ControllerBase
     {
         try
         {
-            UserResponse response = await service.RegisterAsync(request, ct);
-
-            return Ok(response);
+            return Ok(await service.RegisterAsync(request, ct));
         }
         catch (AlreadyExistException alreadyExists)
         {
@@ -44,9 +41,7 @@ public class AuthController(IAuthService service) : ControllerBase
     {
         try
         {
-            UserResponse response = await service.LoginAsync(request, ct);
-
-            return Ok(response);
+            return Ok(await service.LoginAsync(request, ct));
         }
         catch (IncorrectCredentialsException incorrectCredentials)
         {

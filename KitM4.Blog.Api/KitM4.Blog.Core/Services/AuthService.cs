@@ -1,5 +1,4 @@
 ﻿using KitM4.Blog.Core.Jwt;
-using KitM4.Blog.Core.Mappers;
 using KitM4.Blog.Core.Cryptography;
 using KitM4.Blog.Core.Services.Interfaces;
 using KitM4.Blog.Data.Repositories.Interfaces;
@@ -9,7 +8,6 @@ using KitM4.Blog.Domain.Entities;
 using KitM4.Blog.Domain.Exceptions;
 using KitM4.Blog.Domain.Configurations;
 using KitM4.Blog.Domain.Communication.Requests;
-using KitM4.Blog.Domain.Communication.Responses;
 
 using Microsoft.Extensions.Options;
 using System.Security.Claims;
@@ -26,7 +24,7 @@ public class AuthService(
     IValidator<AuthRequests.Login> loginValidator,
     IValidator<AuthRequests.ChangeRole> changeRoleValidator) : IAuthService
 {
-    public async Task<UserResponse> RegisterAsync(AuthRequests.Register request, CancellationToken ct)
+    public async Task<string> RegisterAsync(AuthRequests.Register request, CancellationToken ct)
     {
         await ValidateRequestAsync(request, registerValidator, ct);
 
@@ -44,33 +42,29 @@ public class AuthService(
             Role = UserRole.User,
             Name = request.Name,
             Title = request.Title,
+            ProfileImageUrl = request.ProfileImageUrl,
             Bio = request.Bio,
             PasswordSalt = salt,
             PasswordHash = hash,
             CreatedAt = DateTime.UtcNow,
+            Articles = [],
+            Comments = [],
+            Rates = [],
         };
 
         await users.AddAsync(user, ct);
-
-        string token = JwtGenerator.GenerateToken(user.Id.ToString(), user.Role.ToString(), jwtOptions.Value);
-        return user.ToResponse(token);
+        return JwtGenerator.GenerateToken(user.Id.ToString(), user.Role.ToString(), jwtOptions.Value);
     }
 
-    public async Task<UserResponse> LoginAsync(AuthRequests.Login request, CancellationToken ct)
+    public async Task<string> LoginAsync(AuthRequests.Login request, CancellationToken ct)
     {
         await ValidateRequestAsync(request, loginValidator, ct);
 
         User user = await users.GetByNameAsync(request.Name, ct);
 
-        if (user.PasswordHash == HashGenerator.GenerateHash(request.Password, user.PasswordSalt))
-        {
-            string token = JwtGenerator.GenerateToken(user.Id.ToString(), user.Role.ToString(), jwtOptions.Value);
-            return user.ToResponse(token);
-        }
-        else
-        {
-            throw new IncorrectCredentialsException();
-        }
+        return user.PasswordHash == HashGenerator.GenerateHash(request.Password, user.PasswordSalt)
+            ? JwtGenerator.GenerateToken(user.Id.ToString(), user.Role.ToString(), jwtOptions.Value)
+            : throw new IncorrectCredentialsException();
     }
 
     public async Task ChangeRoleAsync(AuthRequests.ChangeRole request, CancellationToken ct)
@@ -81,9 +75,7 @@ public class AuthService(
 
     public async Task DeleteAsync(ClaimsPrincipal claims, CancellationToken ct)
     {
-        string idString = JwtGenerator.ExtractClaimFromToken(claims, JwtClaimNames.UserId);
-
-        if (Guid.TryParse(idString, out Guid id))
+        if (Guid.TryParse(JwtGenerator.ExtractClaimFromToken(claims, JwtClaimNames.UserId), out Guid id))
         {
             await users.DeleteAsync(id, ct);
         }

@@ -15,4 +15,8 @@ public static class EntityDataLength
     public const int MaxPasswordLength = 128;
 
     public const int MaxHashLength = 256;
+
+    public const int MaxUrlLength = 512;
+
+    public const int MaxCommentLength = 1500;
 }

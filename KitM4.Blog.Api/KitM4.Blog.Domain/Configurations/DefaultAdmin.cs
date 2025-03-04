@@ -2,9 +2,15 @@
 
 public class DefaultAdmin
 {
-    public string Name { get; set; } = string.Empty;
+    public required string Name { get; set; }
 
-    public string PasswordSalt { get; set; } = string.Empty;
+    public required string Title { get; set; }
 
-    public string PasswordHash { get; set; } = string.Empty;
+    public string? ProfileImageUrl { get; set; }
+
+    public string? Bio { get; set; }
+
+    public required string PasswordSalt { get; set; }
+
+    public required string PasswordHash { get; set; }
 }
